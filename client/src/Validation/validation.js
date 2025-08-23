@@ -311,12 +311,24 @@ const settingsValidation = joi.object({
 	systemEmailRequireTLS: joi.boolean(),
 	systemEmailRejectUnauthorized: joi.boolean(),
 	globalThresholds: joi
-		.object({
-			cpu: joi.number().min(1).max(100).allow("").optional(),
-			memory: joi.number().min(1).max(100).allow("").optional(),
-			disk: joi.number().min(1).max(100).allow("").optional(),
-			temperature: joi.number().min(1).max(150).allow("").optional(),
-		})
+		.object()
+		.pattern(
+			joi
+				.string()
+				.trim()
+				.min(1)
+				.max(50)
+				.pattern(/^(?!\$)(?!.*\.)[A-Za-z0-9 _-]+$/),
+			joi
+				.object({
+					cpu: joi.number().min(1).max(100).empty("").optional(),
+					memory: joi.number().min(1).max(100).empty("").optional(),
+					disk: joi.number().min(1).max(100).empty("").optional(),
+					temperature: joi.number().min(1).max(150).empty("").optional(),
+				})
+				.unknown(false)
+				.optional()
+		)
 		.optional(),
 });
 
